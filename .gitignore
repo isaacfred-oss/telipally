@@ -24,3 +24,11 @@ db/
 *.pem
 .vercel
 *.tsbuildinfo
+
+# sandbox-only extras (not part of the app)
+download/
+upload/
+skills/
+examples/
+Caddyfile
+.agent-ctx/
