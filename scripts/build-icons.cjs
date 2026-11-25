@@ -11,6 +11,10 @@ const fs = require("fs");
 const path = require("path");
 const sharp = require("sharp");
 
+// Repo root = parent of the scripts/ folder (works anywhere: local, CI, Vercel)
+const ROOT = path.join(__dirname, "..");
+const OUT_DIR = path.join(ROOT, "public", "icons");
+
 const NAVY = "#1a365d";
 const NAVY_DEEP = "#12293f";
 const TEAL = "#2c7a7b";
@@ -63,8 +67,7 @@ function logoSvg() {
 }
 
 async function run() {
-  const outDir = "/home/z/my-project/public/icons";
-  fs.mkdirSync(outDir, { recursive: true });
+  fs.mkdirSync(OUT_DIR, { recursive: true });
 
   const jobs = [
     ["icon-192.png", iconAny(192, 42), 192],
@@ -72,17 +75,17 @@ async function run() {
     ["maskable-192.png", iconMaskable(192), 192],
     ["maskable-512.png", iconMaskable(512), 512],
     ["apple-touch-icon.png", iconMaskable(180), 180],
-    ["/home/z/my-project/src/app/icon.png", iconMaskable(32), 32],
+    [path.join(ROOT, "src", "app", "icon.png"), iconMaskable(32), 32],
   ];
 
   for (const [name, svg, size] of jobs) {
-    const out = name.startsWith("/") ? name : path.join(outDir, name);
+    const out = path.isAbsolute(name) ? name : path.join(OUT_DIR, name);
     await sharp(Buffer.from(svg)).resize(size, size).png().toFile(out);
     console.log("wrote", out, fs.statSync(out).size, "bytes");
   }
 
-  fs.writeFileSync("/home/z/my-project/public/logo.svg", logoSvg());
-  console.log("wrote /home/z/my-project/public/logo.svg");
+  fs.writeFileSync(path.join(ROOT, "public", "logo.svg"), logoSvg());
+  console.log("wrote", path.join(ROOT, "public", "logo.svg"));
 }
 
 run().catch((e) => {

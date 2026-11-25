@@ -1,5 +1,5 @@
 /* TeliPally service worker — offline shell + smart caching */
-const VERSION = "telipally-v1.0.0";
+const VERSION = "telipally-v1.0.1";
 const SHELL_CACHE = `${VERSION}-shell`;
 const RUNTIME_CACHE = `${VERSION}-runtime`;
 

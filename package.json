@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/build-icons.cjs",
     "dev": "next dev -p 3000 2>&1 | tee dev.log",
     "prebuild": "node scripts/build-icons.cjs",
     "build": "node scripts/build-icons.cjs && next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",

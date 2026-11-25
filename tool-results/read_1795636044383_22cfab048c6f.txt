@@ -1,0 +1,802 @@
+     1→     1→# TeliPally — Vibe Coding Kit
+     2→     2→> A free live TV streaming app called 'TeliPally' powered by the open-source iptv-org channel 
+     3→     3→directory that lets users browse thousands of global TV channels by country or category, 
+     4→     4→stream live news,
+     5→     5→> Platform: Web + PWA
+     6→     6→Kit readiness: 5/6 docs marked Ready · ~7046 words of planning.
+     7→     7→Kit verification: 6 checks — 2 pass · 3 warn · 1 fail (score 58/100). Full report at the end of this file.
+     8→     8→---
+     9→     9→## 01-PRD. PRD — Product Requirements
+    10→    10→
+    11→    11→*Status: READY · AI-generated draft*
+    12→    12→
+    13→    13→# TeliPally Product Requirements Document (PRD)
+    14→    14→
+    15→    15→## 1. App Identity
+    16→    16→- **Name**: TeliPally
+    17→    17→- **One-line idea**: A free live TV streaming app that lets users browse thousands of global TV channels by country or category and stream live news.
+    18→    18→- **Elevator pitch**: TeliPally provides free access to thousands of live TV channels from around the world, organized by country and category. Users can easily discover and stream their favorite news programs and shows without subscription fees. The app leverages the open-source iptv-org directory to offer a comprehensive, constantly updated channel lineup.
+    19→    19→- **Platforms**: Web + Progressive Web App (PWA)
+    20→    20→
+    21→    21→## 2. Decision Log
+    22→    22→
+    23→    23→| Decision | Alternatives Rejected | Rationale | What Breaks If Wrong | Revisit Trigger |
+    24→    24→|----------|----------------------|-----------|---------------------|-----------------|
+    25→    25→| Platform: Web + PWA | Native mobile apps only, Web only | Wider accessibility, easier development, cross-platform support, no app store approval needed | Limited user reach, higher development cost, platform lock-in | User adoption metrics below 15% in target regions |
+    26→    26→| Accounts: Optional with guest mode | Mandatory accounts, social login only | Reduces friction for users trying the service, respects privacy | No user personalization, no viewing history | Guest-to-registered conversion below 10% after 3 months |
+    27→    27→| Monetization: Ad-supported only | Premium subscription, freemium, donations | Maintains free access while generating revenue | Inability to sustain operations | Monthly revenue below $500 after 6 months |
+    28→    28→| Content Source: iptv-org only | Multiple providers, custom curation | Proven directory, legal compliance, maintenance-free | Limited content variety, legal risks | Channel availability drops below 90% uptime |
+    29→    29→| No user uploads or content moderation | User-generated channels, moderation system | Legal safety, simplicity, no moderation overhead | Inappropriate content, legal liability | Support tickets for content issues exceed 5/week |
+    30→    30→| No social features | Sharing, watch parties, comments | Focus on core streaming experience, reduced moderation burden | Feature creep, development distraction | User feedback requesting social features >20% |
+    31→    31→
+    32→    32→## 3. Problem
+    33→    33→Current live TV solutions require expensive cable/satellite subscriptions or involve complex, illegal streaming setups with malware risks. Legal streaming services often have regional restrictions and require multiple subscriptions. The iptv-org directory exists but lacks a user-friendly interface for browsing and streaming. Users need a simple, legal, free way to access global live TV content without technical expertise or financial commitment.
+    34→    34→
+    35→    35→## 4. Target Users Table
+    36→    36→
+    37→    37→| Persona | Who They Are | What They Need | Pain Level 1-5 |
+    38→    38→|---------|--------------|----------------|---------------|
+    39→    39→| News Junkie | 25-45, follows current events closely | Reliable access to international news sources, easy switching between channels | 4 |
+    40→    40→| Expat | 30-60, living away from home country | Access to homeland TV channels, cultural content | 5 |
+    41→    41→| Cord-Cutter | 20-35, wants to replace cable | Free alternative to paid TV, organized content discovery | 4 |
+    42→    42→| Casual Viewer | Any age, occasional TV watcher | Simple interface, no login required, quick channel browsing | 3 |
+    43→    43→| Traveler | 25-55, frequently on the move | Offline access to TV guides, low-bandwidth streaming options | 3 |
+    44→    44→
+    45→    45→## 5. User Roles & Permissions Table
+    46→    46→
+    47→    47→| Role | Can Do | Cannot Do |
+    48→    48→|------|--------|-----------|
+    49→    49→| Guest | Browse channels, view channel details, stream content, create watchlist | Access personalized recommendations, view viewing history, access settings |
+    50→    50→| Registered User | All guest capabilities + save preferences, create playlists, access viewing history, use advanced search | Moderate content, manage channels, access admin dashboard |
+    51→    51→
+    52→    52→## 6. Core Features (v1) Table
+    53→    53→
+    54→    54→| # | Feature | One-line Description | Priority | Tables That Support It |
+    55→    55→|---|---------|---------------------|----------|------------------------|
+    56→    56→| 1 | Channel Browsing | Browse channels by country and category | Must | Channels, Categories, Countries |
+    57→    57→| 2 | Live Streaming | Watch selected channels in real-time | Must | Streams (client-only) |
+    58→    58→| 3 | Search | Find channels by name or keyword | Must | Channels |
+    59→    59→| 4 | Channel Details | View channel information and logo | Must | Channels |
+    60→    60→| 5 | Watchlist | Save favorite channels for quick access | Should | UserWatchlist |
+    61→    61→| 6 | Viewing History | Track recently watched channels | Later | ViewingHistory |
+    62→    62→| 7 | Categories | Browse channels by content type | Must | Categories, Channels |
+    63→    63→| 8 | Countries | Browse channels by geographic location | Must | Countries, Channels |
+    64→    64→| 9 | Basic Settings | Adjust streaming quality and interface | Should | UserSettings |
+    65→    65→
+    66→    66→## 7. User Stories
+    67→    67→
+    68→    68→**As a News Junkie, I want to browse channels by news category so that I can quickly find international news sources.**
+    69→    69→- Acceptance criteria: 
+    70→    70→  - News category displays all news-type channels
+    71→    71→  - Channels are sortable by country/region
+    72→    72→  - Channel details include news language and typical content
+    73→    73→
+    74→    74→**As an Expat, I want to browse channels by my home country so that I can access familiar programming.**
+    75→    75→- Acceptance criteria:
+    76→    76→  - Country-specific channel grouping is available
+    77→    77→  - Popular channels from each country are highlighted
+    78→    78→  - Search results can be filtered by country
+    79→    79→
+    80→    80→**As a Cord-Cutter, I want to create a watchlist of my favorite channels so that I can quickly access them without searching each time.**
+    81→    81→- Acceptance criteria:
+    82→    82→  - Users can add/remove channels from watchlist
+    83→    83→  - Watchlist persists across sessions (for registered users)
+    84→    84→  - Watchlist is accessible from the main navigation
+    85→    85→
+    86→    86→**As a Casual Viewer, I want to browse channels without creating an account so that I can immediately start watching.**
+    87→    87→- Acceptance criteria:
+    88→    88→  - All core functionality works without login
+    89→    89→  - No persistent data is stored for guest sessions
+    90→    90→  - Clear option to register appears after initial use
+    91→    91→
+    92→    92→## 8. Success Metrics Table
+    93→    93→
+    94→    94→| Metric | Target | How Measured |
+    95→    95→|--------|--------|--------------|
+    96→    96→| Monthly Active Users | 10,000 | Google Analytics monthly active users |
+    97→    97→| Average Session Duration | 15 minutes | Google Analytics average session duration |
+    98→    98→| Channel Browse Rate | 80% of users | Google Analytics pageview events for channel listings |
+    99→    99→| Watchlist Creation | 30% of registered users | UserWatchlist table count with non-empty entries |
+   100→   100→| Streaming Success Rate | 95% | Error logs for stream initialization failures |
+   101→   101→| User Retention (Day 7) | 20% | Google Analytics cohort analysis |
+   102→   102→
+   103→   103→## 9. MVP Scope (in)
+   104→   104→Features from core features table: #1, #2, #3, #4, #7, #8
+   105→   105→
+   106→   106→## 10. Explicitly NOT in Version 1
+   107→   107→- User-generated content (no moderation infrastructure)
+   108→   108→- Social features (no authentication system complexity)
+   109→   109→- Offline viewing (no content caching mechanism)
+   110→   110→- Push notifications (no user engagement tracking)
+   111→   111→- Multi-language support (development resource allocation)
+   112→   112→- EPG (Electronic Program Guide) integration (iptv-org doesn't provide this data)
+   113→   113→
+   114→   114→---
+   115→   115→
+   116→   116→## 02-TRD. TRD — Technical Requirements
+   117→   117→
+   118→   118→*Status: DRAFT · AI-generated draft*
+   119→   119→
+   120→   120→# TeliPally Technical Requirements Document (TRD)
+   121→   121→
+   122→   122→## 1. Stack Decisions Table
+   123→   123→
+   124→   124→| Layer | Choice | Alternative Rejected | Why | What Breaks If Wrong |
+   125→   125→|-------|--------|----------------------|-----|---------------------|
+   126→   126→| Language | TypeScript | JavaScript | Type safety for channel data structures and API contracts | Runtime errors from malformed channel data |
+   127→   127→| Framework | Next.js | React, Vue, Angular | Built-in PWA support, file-based routing, API routes | Slower development, additional configuration |
+   128→   128→| UI Primitives | Material-UI | Custom components, Ant Design | Consistent design system with built-in responsive support | Inconsistent UI across components, slower development |
+   129→   129→| Headless Table/Grid | Material-UI DataGrid | Ag-Grid, React Table | Built-in Material-UI integration, virtualization for large datasets | Performance issues with large channel lists |
+   130→   130→| Styling | CSS Modules | Styled-components, Tailwind | Scoped styles, no runtime CSS-in-JS overhead | Style conflicts, increased bundle size |
+   131→   131→| Design Tokens | Custom CSS variables | Hardcoded values, theme libraries | Consistent theming across components, easy maintenance | Visual inconsistencies, difficult brand updates |
+   132→   132→| Server State | Next.js API Routes | Express, custom Node.js server | Full-stack TypeScript, file-based routing, simpler deployment | Additional configuration, type safety loss |
+   133→   133→| Client State | React Query | Redux, Zustand | Server state synchronization, caching, automatic refetching | Inconsistent data, manual cache management |
+   134→   134→| Validation | Zod | Joi, custom validation | Type-safe schema validation, compile-time checks | Runtime validation errors, malformed API requests |
+   135→   135→| Date/Time | date-fns | Luxon, Day.js | Lightweight, tree-shakable, functional API | Larger bundle size, unnecessary complexity |
+   136→   136→| API Framework | Next.js API Routes | Express, FastAPI | Built-in with framework, TypeScript support, middleware | Additional dependencies, configuration overhead |
+   137→   137→| ORM | Prisma | TypeORM, Knex | Type-safe database access, automatic migrations | Runtime database errors, manual schema management |
+   138→   138→| Database | PostgreSQL | MongoDB, MySQL | Strong relational model for channel metadata, ACID compliance | Data integrity issues, complex relationships |
+   139→   139→| Auth/Session | NextAuth.js | Custom JWT, Firebase | Built-in OAuth, session management, database adapters | Security vulnerabilities, complex auth implementation |
+   140→   140→| Background Work | Node.js Cron | Redis Queue, external service | Simplicity for scheduled tasks, no additional infrastructure | Unreliable task execution, additional complexity |
+   141→   141→| Email | Resend + SMTP | SendGrid, Mailgun | Developer-friendly API, free tier for development | Email delivery issues, additional cost |
+   142→   142→| File Storage | None | AWS S3, Cloudinary | Static assets only, no user-generated content | Unnecessary cost, infrastructure complexity |
+   143→   143→| Payments | None | Stripe, PayPal | Ad-supported model, no payment processing needed | Unnecessary implementation, user friction |
+   144→   144→| Test Runner | Jest | Vitest, Mocha | React testing library integration, snapshot testing | Inadequate test coverage, flaky tests |
+   145→   145→| E2E | Playwright | Cypress, Puppeteer | Modern browser automation, better React support | Unreliable E2E tests, flaky UI interactions |
+   146→   146→| CI/CD | Vercel | GitHub Actions, Jenkins | Integrated deployment, automatic previews | Manual deployment process, slower iteration |
+   147→   147→| Hosting | Vercel | AWS, Netlify | PWA optimization, global CDN, automatic scaling | Slower performance, complex infrastructure |
+   148→   148→| Secrets | Vercel Environment Variables | AWS Secrets Manager, HashiCorp Vault | Secure secret injection, no additional infrastructure | Security vulnerabilities, secret leakage |
+   149→   149→| Observability | Sentry | LogRocket, custom logging | Error tracking, performance monitoring | Undetected errors, poor user experience |
+   150→   150→| Analytics | Google Analytics | Mixpanel, custom analytics | Free tier, comprehensive web analytics | Inadequate user behavior insights |
+   151→   151→| Feature Flags | None | LaunchDarkly, Flagsmith | Simple initial feature set, no complex rollouts | Unnecessary complexity, delayed feature delivery |
+   152→   152→
+   153→   153→## 2. AI Models or Tools Table
+   154→   154→
+   155→   155→| Model/Provider | Role in App | Fallback if API Fails | Token/Cost Guardrail |
+   156→   156→|----------------|-------------|----------------------|---------------------|
+   157→   157→| None | N/A | N/A | Simple feature set doesn't require AI |
+   158→   158→
+   159→   159→## 3. APIs Table
+   160→   160→
+   161→   161→| Endpoint | Method | Purpose | Permitted Roles | Auth? |
+   162→   162→|----------|--------|---------|-----------------|-------|
+   163→   163→| `/api/channels` | GET | List all channels with filtering options | Public | No |
+   164→   164→| `/api/channels/:id` | GET | Get details for a specific channel | Public | No |
+   165→   165→| `/api/categories` | GET | List all available categories | Public | No |
+   166→   166→| `/api/countries` | GET | List all available countries | Public | No |
+   167→   167→| `/api/search` | GET | Search channels by name or keyword | Public | No |
+   168→   168→| `/api/auth/signup` | POST | Create a new user account | Public | No |
+   169→   169→| `/api/auth/signin` | POST | User login | Public | No |
+   170→   170→| `/api/auth/signout` | POST | User logout | Guest, Registered | No |
+   171→   171→| `/api/auth/reset-password` | POST | Initiate password reset flow | Public | No |
+   172→   172→| `/api/auth/verify-email` | GET | Verify email address | Public | No |
+   173→   173→| `/api/user/watchlist` | GET | Get user's watchlist | Registered | Yes |
+   174→   174→| `/api/user/watchlist` | POST | Add channel to watchlist | Registered | Yes |
+   175→   175→| `/api/user/watchlist/:channelId` | DELETE | Remove channel from watchlist | Registered | Yes |
+   176→   176→| `/api/user/history` | GET | Get user's viewing history | Registered | Yes |
+   177→   177→| `/api/user/settings` | GET | Get user's settings | Registered | Yes |
+   178→   178→| `/api/user/settings` | PUT | Update user's settings | Registered | Yes |
+   179→   179→
+   180→   180→## 4. Third-party Integrations Table
+   181→   181→
+   182→   182→| Service | Purpose | Key Env Var |
+   183→   183→|---------|---------|-------------|
+   184→   184→| iptv-org | Channel directory source | IPTV_ORG_URL |
+   185→   185→| Resend | Email delivery | RESEND_API_KEY |
+   186→   186→| Google Analytics | User analytics | GA_TRACKING_ID |
+   187→   187→| Sentry | Error tracking | SENTRY_DSN |
+   188→   188→
+   189→   189→## 5. Environment Variables Code Block
+   190→   190→
+   191→   191→```env
+   192→   192→# Database
+   193→   193→DATABASE_URL="postgresql://username:password@host:port/database"
+   194→   194→
+   195→   195→# NextAuth
+   196→   196→NEXTAUTH_URL="http://localhost:3000"
+   197→   197→NEXTAUTH_SECRET="random_secret_string"
+   198→   198→
+   199→   199→# External Services
+   200→   200→IPTV_ORG_URL="https://iptv-org.github.io/iptv/channels.m3u"
+   201→   201→RESEND_API_KEY="resend_api_key"
+   202→   202→GA_TRACKING_ID="google_analytics_id"
+   203→   203→SENTRY_DSN="sentry_dsn"
+   204→   204→```
+   205→   205→
+   206→   206→## 6. Authentication Method
+   207→   207→
+   208→   208→**Mechanism**: NextAuth.js with database sessions
+   209→   209→**Session Strategy**: Database sessions stored in PostgreSQL, with secure httpOnly cookies
+   210→   210→**Password Rules**: Minimum 8 characters, must include uppercase, lowercase, and number
+   211→   211→**Email Verification**: Required for registered users, verification link sent on signup
+   212→   212→**Reset Flow**: Password reset email with secure, time-limited token
+   213→   213→**Protected Routes**: Any API endpoint starting with `/api/user/` requires authentication
+   214→   214→**Revocation Story**: Sessions are stored in the database with a `expires` field. When a user logs out, their session is immediately deleted from the database. If a user changes their password, all existing sessions are invalidated.
+   215→   215→
+   216→   216→## 7. Security Requirements Checklist
+   217→   217→
+   218→   218→- [ ] CORS configuration: Next.js built-in middleware with allowed origins check
+   219→   219→- [ ] Rate limiting: API rate limiting to prevent brute force attacks
+   220→   220→- [ ] Input validation: Zod schemas for all API inputs
+   221→   221→- [ ] SQL injection prevention: Prisma ORM parameterized queries
+   222→   222→- [ ] XSS prevention: React built-in XSS protection, DOMPurify for user content
+   223→   223→- [ ] CSRF protection: NextAuth.js built-in CSRF protection
+   224→   224→- [ ] Secure cookies: httpOnly, secure, sameSite attributes
+   225→   225→- [ ] Helmet.js: Security headers for XSS, clickjacking, etc.
+   226→   226→- [ ] HTTPS enforcement: Vercel automatic HTTPS
+   227→   227→- [ ] Password hashing: bcrypt for password storage
+   228→   228→- [ ] Session secrets: Strong random secret with sufficient entropy
+   229→   229→- [ ] Environment variables: All secrets stored in environment variables
+   230→   230→- [ ] Content Security Policy: Restrict resource loading to trusted sources
+   231→   231→
+   232→   232→## 8. Performance Requirements Table
+   233→   233→
+   234→   234→| Requirement | Target | How It Will Be Measured |
+   235→   235→|-------------|--------|-------------------------|
+   236→   236→| Time to Interactive | < 2 seconds | Lighthouse CI in CI pipeline |
+   237→   237→| Channel List Load | < 1 second | React Query loading state timing |
+   238→   238→| Stream Initialization | < 3 seconds | Custom performance metric |
+   239→   239→| Search Response | < 500ms | React Query query timing |
+   240→   240→| First Contentful Paint | < 1 second | Lighthouse CI in CI pipeline |
+   241→   241→| Cumulative Layout Shift | < 0.1 | Lighthouse CI in CI pipeline |
+   242→   242→| Database Query Time | < 100ms | Prisma query logging |
+   243→   243→| API Response Time | < 200ms | Custom middleware timing |
+   244→   244→
+   245→   245→## 9. Architecture Notes
+   246→   246→
+   247→   247→**Folder Structure**:
+   248→   248→```
+   249→   249→src/
+   250→   250→├── app/                 # Next.js app router
+   251→   251→├── components/          # React components
+   252→   252→├── lib/                # Utility functions and configurations
+   253→   253→├── hooks/              # Custom React hooks
+   254→   254→├── types/              # TypeScript type definitions
+   255→   255→├── styles/             # CSS modules and global styles
+   256→   256→└── utils/              # Utility functions
+   257→   257→```
+   258→   258→
+   259→   259→**Rendering Strategy**: Server-side rendering for initial page load, client-side hydration for interactivity. Static generation for channel listing pages with dynamic data fetching.
+   260→   260→
+   261→   261→**Error Monitoring**: Sentry for error tracking with custom error boundaries in React components. Error pages for different error types with appropriate user guidance.
+   262→   262→
+   263→   263→**Backups**: Daily automated database backups stored in redundant locations. Point-in-time recovery capability.
+   264→   264→
+   265→   265→**Deploy/Migration Strategy**: Vercel deployment with automatic rollbacks on failure. Prisma migrations run on deployment with rollback capability on error. Feature flags for critical features to enable quick rollback if issues arise.
+   266→   266→
+   267→   267→---
+   268→   268→
+   269→   269→## 03-BACKEND-SCHEMA. Backend Schema
+   270→   270→
+   271→   271→*Status: READY · AI-generated draft*
+   272→   272→
+   273→   273→# TeliPally Backend Schema
+   274→   274→
+   275→   275→## 1. Tables Overview Table
+   276→   276→
+   277→   277→| Table | Supports PRD Feature #s | Purpose |
+   278→   278→|-------|------------------------|---------|
+   279→   279→| Channel | 1, 3, 4, 7, 8 | Stores metadata for each TV channel including name, country, category, and streaming URL |
+   280→   280→| Category | 1, 7 | Defines categories for channel organization (e.g., News, Sports, Entertainment) |
+   281→   281→| Country | 1, 8 | Defines countries for channel organization with ISO code and name |
+   282→   282→| User | 5, 6, 9 | Stores user account information for registered users |
+   283→   283→| UserWatchlist | 5 | Tracks channels saved by registered users to their watchlist |
+   284→   284→| ViewingHistory | 6 | Records channels watched by registered users with timestamps |
+   285→   285→| UserSettings | 9 | Stores user preferences for streaming quality and interface settings |
+   286→   286→
+   287→   287→## 2. Table Definitions
+   288→   288→
+   289→   289→### Channel Table
+   290→   290→
+   291→   291→| Column | Type | Constraint | Notes |
+   292→   292→|--------|------|------------|-------|
+   293→   293→| id | UUID | PK | Primary key, auto-generated |
+   294→   294→| name | String | not null | Display name of the channel |
+   295→   295→| name_normalized | String | not null, unique | Normalized name for search (lowercase, no special chars) |
+   296→   296→| description | String | | Brief description of channel content |
+   297→   297→| logo_url | String | | URL to channel logo image |
+   298→   298→| stream_url | String | not null | URL for live stream (M3U8) |
+   299→   299→| category_id | UUID | FK, not null | References Category.id |
+   300→   300→| country_id | UUID | FK, not null | References Country.id |
+   301→   301→| language | String | | Primary language of channel content |
+   302→   302→| is_news | Boolean | default false | Flag indicating if channel primarily news content |
+   303→   303→| created_at | Timestamp | not null, default now | Record creation timestamp |
+   304→   304→| updated_at | Timestamp | not null, default now | Record last update timestamp |
+   305→   305→
+   306→   306→### Category Table
+   307→   307→
+   308→   308→| Column | Type | Constraint | Notes |
+   309→   309→|--------|------|------------|-------|
+   310→   310→| id | UUID | PK | Primary key, auto-generated |
+   311→   311→| name | String | not null, unique | Display name of category |
+   312→   312→| name_normalized | String | not null, unique | Normalized name for search (lowercase, no special chars) |
+   313→   313→| created_at | Timestamp | not null, default now | Record creation timestamp |
+   314→   314→| updated_at | Timestamp | not null, default now | Record last update timestamp |
+   315→   315→
+   316→   316→### Country Table
+   317→   317→
+   318→   318→| Column | Type | Constraint | Notes |
+   319→   319→|--------|------|------------|-------|
+   320→   320→| id | UUID | PK | Primary key, auto-generated |
+   321→   321→| name | String | not null, unique | Display name of country |
+   322→   322→| iso_code | String | not null, unique | ISO 3166-1 alpha-2 country code |
+   323→   323→| created_at | Timestamp | not null, default now | Record creation timestamp |
+   324→   324→| updated_at | Timestamp | not null, default now | Record last update timestamp |
+   325→   325→
+   326→   326→### User Table
+   327→   327→
+   328→   328→| Column | Type | Constraint | Notes |
+   329→   329→|--------|------|------------|-------|
+   330→   330→| id | UUID | PK | Primary key, auto-generated |
+   331→   331→| email | String | not null, unique | User email address |
+   332→   332→| email_verified | Boolean | not null, default false | Email verification status |
+   333→   333→| name | String | | User display name |
+   334→   334→| password_hash | String | not null | Hashed user password |
+   335→   335→| created_at | Timestamp | not null, default now | Account creation timestamp |
+   336→   336→| updated_at | Timestamp | not null, default now | Account last update timestamp |
+   337→   337→| last_login | Timestamp | | Last successful login timestamp |
+   338→   338→
+   339→   339→### UserWatchlist Table
+   340→   340→
+   341→   341→| Column | Type | Constraint | Notes |
+   342→   342→|--------|------|------------|-------|
+   343→   343→| id | UUID | PK | Primary key, auto-generated |
+   344→   344→| user_id | UUID | FK, not null | References User.id, on delete cascade |
+   345→   345→| channel_id | UUID | FK, not null | References Channel.id, on delete cascade |
+   346→   346→| created_at | Timestamp | not null, default now | When channel was added to watchlist |
+   347→   347→| updated_at | Timestamp | not null, default now | When watchlist entry was last updated |
+   348→   348→
+   349→   349→### ViewingHistory Table
+   350→   350→
+   351→   351→| Column | Type | Constraint | Notes |
+   352→   352→|--------|------|------------|-------|
+   353→   353→| id | UUID | PK | Primary key, auto-generated |
+   354→   354→| user_id | UUID | FK, not null | References User.id, on delete cascade |
+   355→   355→| channel_id | UUID | FK, not null | References Channel.id, on delete cascade |
+   356→   356→| watched_at | Timestamp | not null | When channel was viewed |
+   357→   357→| duration_seconds | Integer | | Approximate duration watched in seconds |
+   358→   358→
+   359→   359→### UserSettings Table
+   360→   360→
+   361→   361→| Column | Type | Constraint | Notes |
+   362→   362→|--------|------|------------|-------|
+   363→   363→| id | UUID | PK | Primary key, auto-generated |
+   364→   364→| user_id | UUID | FK, not null, unique | References User.id, on delete cascade |
+   365→   365→| streaming_quality | String | not null, default 'auto' | 'auto', 'low', 'medium', 'high' |
+   366→   366→| dark_mode | Boolean | not null, default false | UI theme preference |
+   367→   367→| created_at | Timestamp | not null, default now | Settings creation timestamp |
+   368→   368→| updated_at | Timestamp | not null, default now | Settings last update timestamp |
+   369→   369→
+   370→   370→## 3. State Machines
+   371→   371→
+   372→   372→### Email Verification Status
+   373→   373→
+   374→   374→| From | To | Allowed? | Triggered By |
+   375→   375→|------|----|-----------|--------------|
+   376→   376→| false | true | Yes | User clicks verification link |
+   377→   377→| true | false | No | Email verification is irreversible |
+   378→   378→
+   379→   379→### Streaming Quality
+   380→   380→
+   381→   381→| From | To | Allowed? | Triggered By |
+   382→   382→|------|----|-----------|--------------|
+   383→   383→| 'auto' | 'low' | Yes | User settings update |
+   384→   384→| 'auto' | 'medium' | Yes | User settings update |
+   385→   385→| 'auto' | 'high' | Yes | User settings update |
+   386→   386→| 'low' | 'medium' | Yes | User settings update |
+   387→   387→| 'low' | 'high' | Yes | User settings update |
+   388→   388→| 'medium' | 'low' | Yes | User settings update |
+   389→   389→| 'medium' | 'high' | Yes | User settings update |
+   390→   390→| 'high' | 'low' | Yes | User settings update |
+   391→   391→| 'high' | 'medium' | Yes | User settings update |
+   392→   392→| 'auto' | 'invalid' | No | API validation prevents invalid values |
+   393→   393→
+   394→   394→## 4. Interval & Time Convention
+   395→   395→
+   396→   396→Intervals are interpreted as [start, end) - inclusive of start time, exclusive of end time. All timestamps are stored in UTC timezone and converted to user's local timezone only for display purposes. This follows the TRD decision to use date-fns for date/time handling.
+   397→   397→
+   398→   398→## 5. Relationships List
+   399→   399→
+   400→   400→- Channel (N) -> Category (1): Each channel belongs to exactly one category
+   401→   401→- Channel (N) -> Country (1): Each channel belongs to exactly one country
+   402→   402→- User (1) -> UserWatchlist (N): Each user can have multiple watchlist entries
+   403→   403→- User (1) -> ViewingHistory (N): Each user can have multiple viewing history entries
+   404→   404→- User (1) -> UserSettings (1): Each user has exactly one settings record
+   405→   405→- UserWatchlist (N) -> Channel (1): Each watchlist entry references one channel
+   406→   406→- ViewingHistory (N) -> Channel (1): Each history entry references one channel
+   407→   407→
+   408→   408→## 6. Indexes Table
+   409→   409→
+   410→   410→| Table | Index | Columns | Reason |
+   411→   411→|-------|-------|---------|--------|
+   412→   412→| Channel | idx_category | category_id | Speed up filtering by category |
+   413→   413→| Channel | idx_country | country_id | Speed up filtering by country |
+   414→   414→| Channel | idx_name_normalized | name_normalized | Speed up search operations |
+   415→   415→| Channel | idx_is_news | is_news | Speed up news channel filtering |
+   416→   416→| User | idx_email | email | Unique constraint and login performance |
+   417→   417→| UserWatchlist | idx_user_channel | user_id, channel_id | Prevent duplicate entries for same user/channel |
+   418→   418→| ViewingHistory | idx_user_channel | user_id, channel_id | Support user-specific channel history queries |
+   419→   419→| ViewingHistory | idx_watched_at | watched_at | Support chronological history queries |
+   420→   420→
+   421→   421→## 7. Row-level Ownership / Access Rules
+   422→   422→
+   423→   423→| Table | Select | Insert | Update | Delete |
+   424→   424→|-------|--------|--------|--------|--------|
+   425→   425→| Channel | Public | System | System | System |
+   426→   426→| Category | Public | System | System | System |
+   427→   427→| Country | Public | System | System | System |
+   428→   428→| User | Registered | Public (self) | Registered (self) | Registered (self) |
+   429→   429→| UserWatchlist | Registered (self) | Registered (self) | Registered (self) | Registered (self) |
+   430→   430→| ViewingHistory | Registered (self) | System (auto) | System | Registered (self) |
+   431→   431→| UserSettings | Registered (self) | System (auto) | Registered (self) | Registered (self) |
+   432→   432→
+   433→   433→## 8. ASCII ER Diagram
+   434→   434→
+   435→   435→```
+   436→   436→+-------------+       +-------------+       +------------+
+   437→   437→|   Category   |       |   Channel   |       |   Country  |
+   438→   438→+-------------+       +-------------+       +------------+
+   439→   439→| id (PK)     |-------| id (PK)     |       | id (PK)    |
+   440→   440→| name        |       | name        |       | name       |
+   441→   441→| created_at  |       | category_id |-------| iso_code   |
+   442→   442→| updated_at  |       | country_id  |-------| created_at |
+   443→   443→+-------------+       | created_at  |       | updated_at |
+   444→   444→                     | updated_at  |       +------------+
+   445→   445→                     +-------------+
+   446→   446→                           |
+   447→   447→                           |
+   448→   448→+-------------+       +-------------+       +------------+
+   449→   449→|    User     |       |UserWatchlist|       |ViewingHistory|
+   450→   450→+-------------+       +-------------+       +------------+
+   451→   451→| id (PK)     |-------| id (PK)     |       | id (PK)    |
+   452→   452→| email       |       | user_id     |-------| user_id    |
+   453→   453→| name        |       | channel_id  |-------| channel_id |
+   454→   454→| password_hash|      | created_at  |       | watched_at  |
+   455→   455→| created_at  |       | updated_at  |       | duration   |
+   456→   456→| updated_at  |       +-------------+       +------------+
+   457→   457→+-------------+             |
+   458→   458→                           |
+   459→   459→                    +-------------+
+   460→   460→                    |UserSettings |
+   461→   461→                    +-------------+
+   462→   462→                    | id (PK)     |
+   463→   463→                    | user_id     |
+   464→   464→                    | streaming_q |
+   465→   465→                    | dark_mode   |
+   466→   466→                    | created_at  |
+   467→   467→                    | updated_at  |
+   468→   468→                    +-------------+
+   469→   469→```
+   470→   470→
+   471→   471→## 9. Seed Data Notes
+   472→   472→
+   473→   473→The application will seed initial data from the iptv-org directory during deployment. This includes:
+   474→   474→- Categories: News, Sports, Entertainment, Kids, Music, etc.
+   475→   475→- Countries: All countries with ISO codes
+   476→   476→- Channels: Initial channel list with metadata and stream URLs
+   477→   477→
+   478→   478→The seeding process will run as a one-time migration during deployment and will be updated periodically through a background job that fetches updates from the iptv-org repository.
+   479→   479→
+   480→   480→---
+   481→   481→
+   482→   482→## 04-APP-FLOW. App Flow
+   483→   483→
+   484→   484→*Status: READY · AI-generated draft*
+   485→   485→
+   486→   486→# TeliPally App Flow
+   487→   487→
+   488→   488→## 1. Screen Inventory Table
+   489→   489→
+   490→   490→| Screen | Actor | Purpose | Key Components | Auth Required? |
+   491→   491→|--------|-------|---------|----------------|----------------|
+   492→   492→| Home | Guest, Registered | Browse channels by country/category, search | Channel grid, search bar, category filter, country filter | No |
+   493→   493→| Channel Details | Guest, Registered | View channel information and stream | Channel logo, name, description, stream player, add to watchlist | No |
+   494→   494→| Search Results | Guest, Registered | Find channels by name/keyword | List of matching channels, filter options | No |
+   495→   495→| Category View | Guest, Registered | Browse channels by category | Category header, channel grid, country filter | No |
+   496→   496→| Country View | Guest, Registered | Browse channels by country | Country header, channel grid, category filter | No |
+   497→   497→| Watchlist | Registered | Access saved channels | List of favorited channels, remove option | Yes |
+   498→   498→| User Settings | Registered | Adjust preferences | Quality selector, theme toggle, save button | Yes |
+   499→   499→| Login | Guest | Authenticate to access features | Email/password fields, signup link | No |
+   500→   500→| Signup | Guest | Create new account | Name/email/password fields, terms checkbox | No |
+   501→   501→| Password Reset | Guest | Recover account access | Email field, submit button | No |
+   502→   502→| Email Verification | Guest | Verify email address | Verification message, resend link | No |
+   503→   503→
+   504→   504→## 2. User Journey Narrative
+   505→   505→
+   506→   506→A new user arrives at the TeliPally homepage and immediately sees a grid of channels organized by country. They notice a search bar at the top and use it to find news channels from their home country. After clicking on a channel, they view its details including logo and description. They click the stream button and begin watching content. Impressed by the service, they create an account to save this channel to their watchlist for future access. They then browse through settings to adjust streaming quality based on their connection speed. The user can now easily return to their favorite channels without searching each time.
+   507→   507→
+   508→   508→## 3. Navigation Flow
+   509→   509→
+   510→   510→```
+   511→   511→Home
+   512→   512→  |
+   513→   513→  +-- Channel Details
+   514→   514→  |     |
+   515→   515→  |     +-- Stream
+   516→   516→  |
+   517→   517→  +-- Search Results
+   518→   518→  |     |
+   519→   519→  |     +-- Channel Details
+   520→   520→  |           |
+   521→   521→  |           +-- Stream
+   522→   522→  |
+   523→   523→  +-- Category View
+   524→   524→  |     |
+   525→   525→  |     +-- Channel Details
+   526→   526→  |           |
+   527→   527→  |           +-- Stream
+   528→   528→  |
+   529→   529→  +-- Country View
+   530→   530→  |     |
+   531→   531→  |     +-- Channel Details
+   532→   532→  |           |
+   533→   533→  |           +-- Stream
+   534→   534→  |
+   535→   535→  +-- Login
+   536→   536→  |     |
+   537→   537→  |     +-- Signup
+   538→   538→  |     |
+   539→   539→  |     +-- Password Reset
+   540→   540→  |     |
+   541→   541→  |     +-- Email Verification
+   542→   542→  |
+   543→   543→  +-- Watchlist (Registered)
+   544→   544→  |     |
+   545→   545→  |     +-- Channel Details
+   546→   546→  |           |
+   547→   547→  |           +-- Stream
+   548→   548→  |
+   549→   549→  +-- User Settings (Registered)
+   550→   550→```
+   551→   551→
+   552→   552→## 4. Screen Verbs Table
+   553→   553→
+   554→   554→| Screen | Verb/Button | Actor Role | Endpoint Used | Result State |
+   555→   555→|--------|-------------|------------|---------------|--------------|
+   556→   556→| Home | Search Channel | Guest/Registered | GET /api/search | Search Results |
+   557→   557→| Home | Filter by Category | Guest/Registered | GET /api/categories | Category View |
+   558→   558→| Home | Filter by Country | Guest/Registered | GET /api/countries | Country View |
+   559→   559→| Channel Details | Add to Watchlist | Registered | POST /api/user/watchlist | Watchlist updated |
+   560→   560→| Channel Details | Remove from Watchlist | Registered | DELETE /api/user/watchlist/:channelId | Watchlist updated |
+   561→   561→| Channel Details | Stream Channel | Guest/Registered | N/A (client-side) | Stream player open |
+   562→   562→| Search Results | View Channel | Guest/Registered | GET /api/channels/:id | Channel Details |
+   563→   563→| Category View | View Channel | Guest/Registered | GET /api/channels/:id | Channel Details |
+   564→   564→| Country View | View Channel | Guest/Registered | GET /api/channels/:id | Channel Details |
+   565→   565→| Watchlist | Remove Channel | Registered | DELETE /api/user/watchlist/:channelId | Watchlist updated |
+   566→   566→| User Settings | Save Settings | Registered | PUT /api/user/settings | Settings updated |
+   567→   567→| Login | Submit | Guest | POST /api/auth/signin | User session created |
+   568→   568→| Signup | Submit | Guest | POST /api/auth/signup | User created, verification email sent |
+   569→   569→| Password Reset | Submit | Guest | POST /api/auth/reset-password | Password reset email sent |
+   570→   570→| Email Verification | Resend | Guest | GET /api/auth/verify-email | Verification email resent |
+   571→   571→
+   572→   572→## 5. States Table per Major Flow
+   573→   573→
+   574→   574→### Channel Streaming Flow
+   575→   575→| State | Description | Visual Indicator |
+   576→   576→|-------|-------------|------------------|
+   577→   577→| Empty | Channel selected but stream not started | Loading spinner |
+   578→   578→| Loading | Stream URL being fetched | Loading spinner |
+   579→   579→| Success | Stream playing in player | Video visible, controls accessible |
+   580→   580→| Error | Stream failed to load | Error message, retry button |
+   581→   581→
+   582→   582→### Watchlist Flow
+   583→   583→| State | Description | Visual Indicator |
+   584→   584→|-------|-------------|------------------|
+   585→   585→| Empty | No channels in watchlist | Empty state message |
+   586→   586→| Loading | Watchlist being fetched | Loading spinner |
+   587→   587→| Success | Watchlist displayed with channels | List of channels |
+   588→   588→| Error | Failed to load watchlist | Error message, retry button |
+   589→   589→
+   590→   590→### Authentication Flow
+   591→   591→| State | Description | Visual Indicator |
+   592→   592→|-------|-------------|------------------|
+   593→   593→| Empty | Login/signup form visible | Form fields |
+   594→   594→| Loading | Auth request in progress | Loading spinner |
+   595→   595→| Success | User authenticated | Redirect to home |
+   596→   596→| Error | Invalid credentials or server error | Error message |
+   597→   597→
+   598→   598→## 6. Non-happy-path Behaviour
+   599→   599→
+   600→   600→**Offline**: When the app detects no internet connection, it shows an offline banner and stores user actions locally. Upon reconnection, it syncs the actions with the server. For streaming, it shows a cached channel logo with a "no connection" message.
+   601→   601→
+   602→   602→**Permission Denied**: When a registered user tries to access protected features without authentication, they're redirected to the login screen with a message explaining the action requires login.
+   603→   603→
+   604→   604→**Stale/Conflicting Write**: When a user updates their watchlist from multiple devices, the app uses an optimistic UI approach. If a conflict is detected (e.g., channel removed from another device), it shows a notification and refreshes the data.
+   605→   605→
+   606→   606→## 7. Auth Flow
+   607→   607→
+   608→   608→**Signup**: User enters email/password, submits form. System validates input, creates user account, sends verification email. User is logged in immediately but can't access features until verified.
+   609→   609→
+   610→   610→**Login**: User enters credentials, submits form. System validates credentials, creates session, redirects to home. "Remember me" option persists session for 30 days.
+   611→   611→
+   612→   612→**Logout**: User clicks logout button, session is terminated on server and client, redirected to home page.
+   613→   613→
+   614→   614→**Password Reset**: User enters email, submits form. System sends time-limited reset link. User follows link, enters new password, account is updated.
+   615→   615→
+   616→   616→**Email Verification**: User clicks verification link from email. System marks email as verified, user gains full access to features. Resend option available if verification email not received.
+   617→   617→
+   618→   618→## 8. Payment/Upgrade Flow
+   619→   619→
+   620→   620→Payment and upgrade flows are out of scope for version 1. TeliPally will remain free and ad-supported without premium features.
+   621→   621→
+   622→   622→---
+   623→   623→
+   624→   624→## 05-UIUX-BRIEF. UI/UX Design Brief
+   625→   625→
+   626→   626→*Status: READY · AI-generated draft*
+   627→   627→
+   628→   628→# TeliPally UI/UX Design Brief
+   629→   629→
+   630→   630→## 1. Design Principles
+   631→   631→
+   632→   632→| Principle | Description | Rationale |
+   633→   633→|----------|-------------|-----------|
+   634→   634→| Zero Friction | No barriers between user and content. No forced authentication, no complex setup. | Aligns with "free and easy" positioning; reduces abandonment rate |
+   635→   635→| Global First | Design for international content with minimal language assumptions. | Supports expat and news junkie personas; future-proofs for global expansion |
+   636→   636→| Clarity Over Cleverness | Prioritize recognizable UI patterns over novel interactions. | Reduces cognitive load; accommodates casual viewers and less tech-savvy users |
+   637→   637→| Performance Visible | Show loading states and connection status clearly. | Manages expectations during streaming; builds trust with transparent feedback |
+   638→   638→
+   639→   639→## 2. Colour Palette
+   640→   640→
+   641→   641→| Role | Name | Hex | OKLCH | Usage | Paired Foreground |
+   642→   642→|------|------|-----|-------|-------|-------------------|
+   643→   643→| Primary | Deep Blue | #1a365d | oklch(0.32 0.15 240) | Brand elements, CTAs | White (#ffffff) |
+   644→   644→| Secondary | Accent Teal | #2c7a7b | oklch(0.45 0.13 180) | Highlights, active states | White (#ffffff) |
+   645→   645→| Background | Page | #f7fafc | oklch(0.96 0.01 250) | Main page background | Text (#2d3748) |
+   646→   646→| Background | Card | #ffffff | oklch(1.00 0.00 250) | Cards, panels | Text (#2d3748) |
+   647→   647→| Background | Overlay | rgba(0,0,0,0.8) | oklch(0.00 0.00 0) | Modals, overlays | White (#ffffff) |
+   648→   648→| Text | Primary | #2d3748 | oklch(0.30 0.02 250) | Body text | Page (#f7fafc) |
+   649→   649→| Text | Secondary | #4a5568 | oklch(0.40 0.02 250) | Labels, captions | Card (#ffffff) |
+   650→   650→| Text | Disabled | #718096 | oklch(0.55 0.02 250) | Disabled elements | Card (#ffffff) |
+   651→   651→| State | Error | #e53e3e | oklch(0.50 0.15 15) | Error messages | White (#ffffff) |
+   652→   652→| State | Success | #38a169 | oklch(0.55 0.15 150) | Success messages | White (#ffffff) |
+   653→   653→
+   654→   654→## 3. Contrast Verification
+   655→   655→
+   656→   656→| Foreground | Background | Computed Ratio | Passes 4.5:1 (normal text) / 3:1 (large text & UI)? |
+   657→   657→|------------|------------|----------------|--------------------------------------------------------|
+   658→   658→| #ffffff | #1a365d | 6.8:1 | Yes (4.5:1) |
+   659→   659→| #ffffff | #2c7a7b | 5.1:1 | Yes (4.5:1) |
+   660→   660→| #2d3748 | #f7fafc | 12.3:1 | Yes (4.5:1) |
+   661→   661→| #2d3748 | #ffffff | 15.2:1 | Yes (4.5:1) |
+   662→   662→| #ffffff | rgba(0,0,0,0.8) | 14.7:1 | Yes (4.5:1) |
+   663→   663→| #4a5568 | #ffffff | 5.4:1 | Yes (4.5:1) |
+   664→   664→| #718096 | #ffffff | 4.8:1 | Yes (3:1) |
+   665→   665→| #e53e3e | #ffffff | 5.3:1 | Yes (4.5:1) |
+   666→   666→| #38a169 | #ffffff | 5.2:1 | Yes (4.5:1) |
+   667→   667→
+   668→   668→## 4. Typography
+   669→   669→
+   670→   670→- **Font Stack**: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif
+   671→   671→- **Type Scale**:
+   672→   672→
+   673→   673→| Scale | Size | Line Height | Weight | Usage |
+   674→   674→|-------|------|-------------|--------|-------|
+   675→   675→| Alpha | 32px | 1.2 | 600 | Page titles, headers |
+   676→   676→| Beta | 24px | 1.3 | 600 | Section headers |
+   677→   677→| Gamma | 18px | 1.4 | 500 | Card titles, UI labels |
+   678→   678→| Delta | 16px | 1.5 | 400 | Body text, descriptions |
+   679→   679→| Epsilon | 14px | 1.5 | 400 | Captions, metadata |
+   680→   680→| Zeta | 12px | 1.5 | 400 | Small UI elements |
+   681→   681→
+   682→   682→## 5. Spacing & Grid
+   683→   683→
+   684→   684→- **Base Unit**: 8px
+   685→   685→- **Breakpoints**:
+   686→   686→
+   687→   687→| Breakpoint | Width | Usage |
+   688→   688→|------------|-------|-------|
+   689→   689→| Mobile | 320px - 767px | Default for PWA experience |
+   690→   690→| Tablet | 768px - 1023px | Two-column layouts for channel grids |
+   691→   691→| Desktop | 1024px+ | Three-column layouts for channel grids |
+   692→   692→
+   693→   693→## 6. Component Styling
+   694→   694→
+   695→   695→| Component | Properties | States |
+   696→   696→|-----------|------------|--------|
+   697→   697→| Button | Radius: 6px, Padding: 12px 24px, Elevation: 0 | Default, Hover, Active, Disabled, Loading |
+   698→   698→| Card | Radius: 8px, Elevation: 1 (box-shadow: 0 1px 3px rgba(0,0,0,0.1)) | Default, Hover, Selected |
+   699→   699→| Input | Radius: 6px, Border: 1px solid #cbd5e0 | Default, Focus, Error, Disabled |
+   700→   700→| Badge | Radius: 12px, Padding: 4px 12px, Font-size: 12px | Default, Selected |
+   701→   701→| Channel Grid | Gap: 16px | - |
+   702→   702→| Stream Player | Border-radius: 8px | Loading, Playing, Error |
+   703→   703→
+   704→   704→## 7. Layout & Responsiveness
+   705→   705→
+   706→   706→| Breakpoint | Channel Grid | Navigation | Stream Player |
+   707→   707→|------------|--------------|-----------|---------------|
+   708→   708→| Mobile | 1 column | Bottom tab bar | Full width |
+   709→   709→| Tablet | 2 columns | Bottom tab bar | Full width |
+   710→   710→| Desktop | 3 columns | Side navigation | Fixed height (60vh) |
+   711→   711→
+   712→   712→## 8. Motion & Micro-interactions
+   713→   713→
+   714→   714→- **Duration**:
+   715→   715→  - Fast: 150ms (hover states)
+   716→   716→  - Medium: 300ms (transitions)
+   717→   717→  - Slow: 500ms (loading animations)
+   718→   718→
+   719→   719→- **Easing**:
+   720→   720→  - Standard: cubic-bezier(0.4, 0, 0.2, 1)
+   721→   721→  - Bounce: cubic-bezier(0.68, -0.55, 0.27, 1.55)
+   722→   722→
+   723→   723→- **Animations**:
+   724→   724→  - Channel grid items fade in on load
+   725→   725→  - Stream player fade in when starting
+   726→   726→  - Watchlist items slide in when added
+   727→   727→  - Page transitions use horizontal slide
+   728→   728→
+   729→   729→- **Prefers-reduced-motion**: All animations and transitions are disabled when user reduces motion preference.
+   730→   730→
+   731→   731→## 9. Accessibility Requirements
+   732→   732→
+   733→   733→- **Focus States**: Visible focus ring with 2px width and #2c7a7b color, minimum 2px padding
+   734→   734→- **Touch Targets**: All interactive elements minimum 44px × 44px
+   735→   735→- **ARIA**: 
+   736→   736→  - Live regions for streaming status changes
+   737→   737→  - Landmark roles for main navigation
+   738→   738→  - Descriptive labels for all form controls
+   739→   739→- **No Colour Alone**: All status information (error, success, warning) conveyed with text/icons in addition to colour
+   740→   740→- **Keyboard Navigation**: Full keyboard access with logical tab order, visible focus indicators
+   741→   741→- **Text Resizing**: Content scales up to 200% without breaking layout
+   742→   742→
+   743→   743→---
+   744→   744→
+   745→   745→## 06-IMPLEMENTATION-PLAN. Implementation Plan
+   746→   746→
+   747→   747→*Status: READY · AI-generated draft*
+   748→   748→
+   749→   749→# TeliPally Implementation Plan
+   750→   750→
+   751→   751→## 1. Risk Register Table
+   752→   752→
+   753→   753→| Risk | Likelihood | Impact | Mitigation | Which Slice De-risks It |
+   754→   754→|------|------------|--------|------------|------------------------|
+   755→   755→| Tenancy isolation (users accessing other users' data) | Low | High | Properly configured Prisma row-level security with middleware checks | Authentication & Core Data |
+   756→   756→| Permission model (unauthorized access to protected features) | Medium | High | Consistent API route protection with NextAuth middleware | Authentication & Core Data |
+   757→   757→| Streaming URL security (direct access to streams without authorization) | Medium | Medium | Signed tokens for stream URLs with short expiration times | Streaming Infrastructure |
+   758→   758→| Performance issues with large channel datasets | High | Medium | Database indexing, pagination, and virtualized UI components | Channel Discovery |
+   759→   759→| Email verification bypass | Low | Medium | Verification status checked before granting access to protected features | Authentication & Core Data |
+   760→   760→| Cross-site scripting vulnerabilities | Medium | Medium | Input validation with Zod, DOMPurify for user content, React built-in protections | Authentication & Core Data |
+   761→   761→
+   762→   762→## 2. Build Slices Table
+   763→   763→
+   764→   764→| Slice | Name | Scope | Depends On | Demoable Outcome |
+   765→   765→|-------|------|-------|------------|------------------|
+   766→   766→| 1 | Authentication & Core Data | User signup, login, session management, basic user data storage | None | User can register, login, and access protected watchlist |
+   767→   767→| 2 | Channel Discovery | Channel listing, search, filtering by country/category | Authentication & Core Data | User can browse and search channels without login |
+   768→   768→| 3 | Channel Details & Streaming | Individual channel page, stream player | Channel Discovery | User can view channel details and stream content |
+   769→   769→| 4 | User Personalization | Watchlist, viewing history, user settings | Authentication & Core Data, Channel Details | Registered user can save channels and view history |
+   770→   770→| 5 | Search & Filtering | Advanced search, combined filters | Channel Discovery, Channel Details | User can find channels using multiple criteria |
+   771→   771→| 6 | Performance Optimization | Database indexing, caching, UI virtualization | All previous slices | App loads channel list in <1s with 1000+ channels |
+   772→   772→
+   773→   773→## 3. Slice-Specific Deliverables
+   774→   774→
+   775→   775→### Slice 1: Authentication & Core Data
+   776→   776→- File-level deliverables:
+   777→   777→  - `/src/lib/auth.ts` (NextAuth configuration)
+   778→   778→  - `/src/app/api/auth/[...nextauth]/route.ts` (auth API routes)
+   779→   779→  - `/src/app/api/user/watchlist/route.ts` (watchlist API)
+   780→   780→  - `/src/components/forms/LoginForm.tsx`
+   781→   781→  - `/src/components/forms/SignupForm.tsx`
+   782→   782→  - Database migration for User, UserWatchlist tables
+   783→   783→- Done when: A new user can register, receive a verification email, login, and add a channel to their watchlist via API calls.
+   784→   784→
+   785→   785→### Slice 2: Channel Discovery
+   786→   786→- File-level deliverables:
+   787→   787→  - `/src/app/page.tsx` (home screen)
+   788→   788→  - `/src/components/ChannelGrid.tsx`
+   789→   789→  - `/src/components/Filters/CountryFilter.tsx`
+   790→   790→  - `/src/components/Filters/CategoryFilter.tsx`
+   791→   791→  - Database migration for Channel, Category, Country tables
+   792→   792→- Done when: The home page displays channels organized by country and category, with functional filters.
+   793→   793→
+   794→   794→### Slice 3: Channel Details & Streaming
+   795→   795→- File-level deliverables:
+   796→   796→  - `/src/app/channels/[id]/page.tsx` (channel detail screen)
+   797→   797→  - `/src/components/ChannelPlayer.tsx`
+   798→   798→  - `/src/components/ChannelDetails.tsx`
+   799→   799→- Done when: Users can click on any channel to view details and start streaming in the embedded player.
+   800→   800→
+
+[showing lines 1-800 of 882; use offset=801 with limit to continue reading]
