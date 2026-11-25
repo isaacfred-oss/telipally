@@ -66,9 +66,14 @@ No environment variables are required.
 
 ## Deploy
 
-The repo deploys to Vercel zero-config (Next.js is auto-detected). The bundled snapshot ships
-with the serverless functions via `outputFileTracingIncludes`, so channel data is available even
-before the first background refresh completes.
+The repo deploys to Vercel zero-config (Next.js is auto-detected; `vercel.json` pins the build
+command so the PWA icon PNGs are regenerated from `public/logo.svg` at build time via
+`scripts/build-icons.cjs`). The bundled snapshot ships with the serverless functions via
+`outputFileTracingIncludes`, so channel data is available even before the first background
+refresh completes.
+
+**Install the PWA:** open the deployed site in Chrome/Edge (desktop or Android) and use the
+"Install app" button, or on iOS: Share → Add to Home Screen.
 
 ## Credits
 
