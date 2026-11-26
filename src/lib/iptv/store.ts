@@ -10,6 +10,14 @@ import type { Category, Channel, Country, Dataset } from "@/lib/types";
  *  1. Boot from a bundled snapshot of the iptv-org directory (works offline / cold starts).
  *  2. Refresh from the live iptv-org API in the background (stale-while-revalidate, 12h TTL).
  *  3. Results are cached in module memory per server instance.
+ *
+ * Pipeline hygiene (Phase 2):
+ *  - https:// streams only (mixed-content safe)
+ *  - Streams requiring custom user-agent / referrer headers are dropped (unplayable in <video>)
+ *  - Streams labeled "Geo-blocked" are skipped (dead outside their home region)
+ *  - Channels in the iptv-org blocklist (DMCA / legal takedowns) are excluded
+ *  - NSFW channels are excluded
+ *  - HD logos preferred via logos.json scoring
  */
 
 const SNAPSHOT_PATH = path.join(process.cwd(), "src/data/telipally-snapshot.json");
@@ -41,6 +49,11 @@ interface RawLogo {
   width?: number;
 }
 
+interface RawBlocklistEntry {
+  channel?: string | null;
+  reason?: string;
+}
+
 interface RawFeed {
   channel: string | null;
   is_main?: boolean;
@@ -62,6 +75,7 @@ interface RawData {
   countries: Array<{ name: string; code: string; flag?: string }>;
   feeds: RawFeed[];
   logos: RawLogo[];
+  blocklist: RawBlocklistEntry[];
 }
 
 interface Store {
@@ -105,11 +119,17 @@ export function buildDataset(raw: RawData, generatedAt: string, source: string):
   const ALLDAY_BONUS = 50;
   const M3U8_BONUS = 20;
 
+  // DMCA / legal takedowns: never serve these channels (iptv-org blocklist.json).
+  const blockedChannels = new Set(
+    raw.blocklist.map((e) => e.channel).filter((id): id is string => Boolean(id)),
+  );
+
   const bestStreams = new Map<string, { score: number; url: string; quality: string; is247: boolean }>();
   for (const s of raw.streams) {
     if (!s.channel || !s.url) continue;
     if (!/^https:\/\//i.test(s.url)) continue; // https only (mixed-content safe)
     if (s.user_agent || s.referrer) continue; // needs special headers -> unusable in browser
+    if ((s.labels ?? []).includes("Geo-blocked")) continue; // dead outside its home region
     const score =
       (QUALITY_RANK[s.quality ?? ""] ?? 1) * QUALITY_BONUS +
       (s.labels && s.labels.includes("Not 24/7") ? 0 : ALLDAY_BONUS) +
@@ -151,6 +171,7 @@ export function buildDataset(raw: RawData, generatedAt: string, source: string):
   const channels: Channel[] = [];
   for (const c of raw.channels) {
     if (!c.country || c.is_nsfw) continue;
+    if (blockedChannels.has(c.id)) continue; // DMCA / legal takedown
     const st = bestStreams.get(c.id);
     if (!st) continue;
     usedCountryCodes.add(c.country);
@@ -220,16 +241,17 @@ async function fetchJson<T>(name: string): Promise<T> {
 
 async function refreshRemote(): Promise<Dataset | null> {
   try {
-    const [channels, streams, categories, countries, feeds, logos] = await Promise.all([
+    const [channels, streams, categories, countries, feeds, logos, blocklist] = await Promise.all([
       fetchJson<RawData["channels"]>("channels.json"),
       fetchJson<RawData["streams"]>("streams.json"),
       fetchJson<RawData["categories"]>("categories.json"),
       fetchJson<RawData["countries"]>("countries.json"),
       fetchJson<RawData["feeds"]>("feeds.json"),
       fetchJson<RawData["logos"]>("logos.json"),
+      fetchJson<RawBlocklistEntry[]>("blocklist.json"),
     ]);
     const dataset = buildDataset(
-      { channels, streams, categories, countries, feeds, logos },
+      { channels, streams, categories, countries, feeds, logos, blocklist },
       new Date().toISOString(),
       "iptv-org/api (live)",
     );

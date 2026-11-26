@@ -3,6 +3,8 @@
  * Selection rules:
  *  - Only channels that have at least one usable browser stream:
  *      https:// URL, no user-agent, no referrer required (these break in <video>)
+ *  - Streams labeled "Geo-blocked" are skipped (dead outside their home region)
+ *  - Channels in the iptv-org blocklist (DMCA / legal takedowns) are excluded
  *  - Non-NSFW only
  *  - Must belong to a country
  *  - Logo: prefer in_use + PNG + width >= 120
@@ -19,6 +21,9 @@ const categories = JSON.parse(fs.readFileSync(`${DIR}/categories.json`, "utf8"))
 const countries = JSON.parse(fs.readFileSync(`${DIR}/countries.json`, "utf8"));
 const feeds = JSON.parse(fs.readFileSync(`${DIR}/feeds.json`, "utf8"));
 const logos = JSON.parse(fs.readFileSync(`${DIR}/logos.json`, "utf8"));
+const blocklist = JSON.parse(fs.readFileSync(`${DIR}/blocklist.json`, "utf8"));
+
+const blockedChannels = new Set(blocklist.map((e) => e.channel).filter(Boolean));
 
 const QUALITY_RANK = { "1080p": 6, "720p": 5, "480p": 4, "360p": 3, "240p": 2 };
 
@@ -28,6 +33,7 @@ for (const s of streams) {
   if (!s.channel || !s.url) continue;
   if (!/^https:\/\//i.test(s.url)) continue; // https only (mixed-content safe)
   if (s.user_agent || s.referrer) continue; // needs special headers -> unusable in browser
+  if ((s.labels || []).includes("Geo-blocked")) continue; // dead outside its home region
   const score =
     (QUALITY_RANK[s.quality] ?? 1) * 100 +
     (s.labels && s.labels.includes("Not 24/7") ? 0 : 50) +
@@ -69,6 +75,7 @@ const usedCountryCodes = new Set();
 const outChannels = [];
 for (const c of channels) {
   if (!c.country || c.is_nsfw) continue;
+  if (blockedChannels.has(c.id)) continue; // DMCA / legal takedown
   const st = bestStreams.get(c.id);
   if (!st) continue;
   usedCountryCodes.add(c.country);
