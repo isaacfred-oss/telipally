@@ -32,3 +32,7 @@ skills/
 examples/
 Caddyfile
 .agent-ctx/
+.zscripts/
+tool-results/
+tests/
+*.pid
