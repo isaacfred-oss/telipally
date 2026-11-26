@@ -44,7 +44,7 @@ export function PlayerDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[92dvh] gap-0 overflow-y-auto p-0 sm:max-w-3xl" aria-describedby={undefined}>
+      <DialogContent className="max-h-[92dvh] gap-0 overflow-x-hidden overflow-y-auto p-0 sm:max-w-3xl" aria-describedby={undefined}>
         {channel && (
           <>
             <DialogHeader className="sr-only">
@@ -60,7 +60,7 @@ export function PlayerDialog({
             />
 
             {/* Info */}
-            <div className="flex items-start gap-4 p-4 sm:p-6">
+            <div className="flex min-w-0 items-start gap-4 p-4 sm:p-6">
               {channel.logo ? (
                 <img
                   src={channel.logo}
@@ -110,7 +110,7 @@ export function PlayerDialog({
               </Button>
             </div>
 
-            <p className="px-4 pb-4 text-xs text-muted-foreground sm:px-6 sm:pb-6">
+            <p className="min-w-0 px-4 pb-4 text-xs text-muted-foreground sm:px-6 sm:pb-6">
               Stream sourced from the open iptv-org directory. Availability and quality depend on the
               broadcaster. Volume <Volume2 aria-hidden="true" className="inline size-3 align-[-1px]" /> controls are on the video itself.
             </p>
@@ -231,10 +231,11 @@ function PlayerBody({
   };
 
   return (
-    <div className="relative aspect-video w-full bg-black">
+    <div className="relative aspect-video w-full min-w-0 overflow-hidden bg-black">
       <video
         ref={videoRef}
-        className="h-full w-full object-contain"
+        className="absolute inset-0 h-full w-full object-contain"
+        style={{ width: "100%", height: "100%", objectFit: "contain" }}
         playsInline
         controls={showControls}
         aria-label={`Live stream of ${channel.name}`}
