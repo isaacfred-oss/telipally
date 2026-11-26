@@ -4,6 +4,8 @@ export interface FetchChannelsParams {
   q?: string;
   country?: string;
   category?: string;
+  /** iptv-org language code (e.g. "eng") to restrict results to. */
+  lang?: string;
   page?: number;
   pageSize?: number;
   sort?: "default" | "name" | "quality";
@@ -14,6 +16,7 @@ export async function fetchChannels(params: FetchChannelsParams): Promise<Channe
   if (params.q?.trim()) qs.set("q", params.q.trim());
   if (params.country && params.country !== "all") qs.set("country", params.country);
   if (params.category && params.category !== "all") qs.set("category", params.category);
+  if (params.lang) qs.set("lang", params.lang);
   qs.set("page", String(params.page ?? 1));
   qs.set("pageSize", String(params.pageSize ?? 60));
   if (params.sort) qs.set("sort", params.sort);
@@ -23,14 +26,16 @@ export async function fetchChannels(params: FetchChannelsParams): Promise<Channe
   return res.json();
 }
 
-export async function fetchCategories(): Promise<CategoriesResponse> {
-  const res = await fetch("/api/categories");
+export async function fetchCategories(lang?: string): Promise<CategoriesResponse> {
+  const suffix = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  const res = await fetch(`/api/categories${suffix}`);
   if (!res.ok) throw new Error(`Failed to load categories (HTTP ${res.status})`);
   return res.json();
 }
 
-export async function fetchCountries(): Promise<CountriesResponse> {
-  const res = await fetch("/api/countries");
+export async function fetchCountries(lang?: string): Promise<CountriesResponse> {
+  const suffix = lang ? `?lang=${encodeURIComponent(lang)}` : "";
+  const res = await fetch(`/api/countries${suffix}`);
   if (!res.ok) throw new Error(`Failed to load countries (HTTP ${res.status})`);
   return res.json();
 }

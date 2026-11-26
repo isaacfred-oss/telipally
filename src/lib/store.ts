@@ -62,10 +62,13 @@ export const useRecents = create<RecentsStore>()(
   ),
 );
 
-/** Playback preferences, persisted to localStorage. */
+/** Playback & content preferences, persisted to localStorage. */
 interface SettingsStore {
   autoplay: boolean;
   setAutoplay: (value: boolean) => void;
+  /** Show only channels broadcast in English (default on; user can disable). */
+  englishOnly: boolean;
+  setEnglishOnly: (value: boolean) => void;
 }
 
 export const useSettings = create<SettingsStore>()(
@@ -73,6 +76,8 @@ export const useSettings = create<SettingsStore>()(
     (set, get) => ({
       autoplay: true,
       setAutoplay: (value) => set({ autoplay: value ?? get().autoplay }),
+      englishOnly: true,
+      setEnglishOnly: (value) => set({ englishOnly: value ?? get().englishOnly }),
     }),
     { name: "telipally-settings", storage: createJSONStorage(() => localStorage) },
   ),

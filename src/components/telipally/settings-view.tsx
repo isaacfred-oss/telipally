@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, Info, Palette, PlayCircle, Trash2, Wifi, Smartphone } from "lucide-react";
+import { Download, Info, Languages, Palette, PlayCircle, Trash2, Wifi, Smartphone } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -31,6 +31,8 @@ export function SettingsView() {
   const { theme, setTheme } = useTheme();
   const autoplay = useSettings((s) => s.autoplay);
   const setAutoplay = useSettings((s) => s.setAutoplay);
+  const englishOnly = useSettings((s) => s.englishOnly);
+  const setEnglishOnly = useSettings((s) => s.setEnglishOnly);
   const clearWatchlist = useWatchlist((s) => s.clear);
   const watchlistCount = useWatchlist((s) => s.ids.length);
   const recentsCount = useRecents((s) => s.items.length);
@@ -77,6 +79,33 @@ export function SettingsView() {
               <SelectItem value="system">System</SelectItem>
             </SelectContent>
           </Select>
+        </CardContent>
+      </Card>
+
+      {/* Content */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Languages aria-hidden="true" className="size-4 text-primary" />
+            Content
+          </CardTitle>
+          <CardDescription>Choose which channels appear in your guide.</CardDescription>
+        </CardHeader>
+        <CardContent className="flex items-center justify-between gap-4">
+          <div>
+            <Label htmlFor="english-only" className="text-sm">
+              English channels only
+            </Label>
+            <p className="text-sm font-normal text-muted-foreground">
+              Hide channels that are not broadcast in English. You can also toggle this from the filter bar.
+            </p>
+          </div>
+          <Switch
+            id="english-only"
+            checked={mounted ? englishOnly : true}
+            onCheckedChange={setEnglishOnly}
+            aria-label="English channels only"
+          />
         </CardContent>
       </Card>
 

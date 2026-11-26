@@ -276,6 +276,8 @@ export interface ChannelQuery {
   q?: string;
   country?: string;
   category?: string;
+  /** Restrict to one iptv-org language code (e.g. "eng"). Undefined = all languages. */
+  language?: string;
   page?: number;
   pageSize?: number;
   sort?: "default" | "name" | "quality";
@@ -290,13 +292,14 @@ export interface QueryResult {
 }
 
 export function queryChannels(query: ChannelQuery): QueryResult {
-  const { q, country, category, sort = "default" } = query;
+  const { q, country, category, language, sort = "default" } = query;
   const page = Math.max(1, Math.floor(query.page ?? 1));
   const pageSize = Math.min(120, Math.max(1, Math.floor(query.pageSize ?? 60)));
 
   const normQ = q ? normalizeText(q) : "";
   let list = getStore().dataset.channels;
 
+  if (language) list = list.filter((c) => c.language === language);
   if (country && country !== "all") list = list.filter((c) => c.country === country);
   if (category && category !== "all") list = list.filter((c) => c.categories.includes(category));
 
@@ -338,18 +341,42 @@ export function getChannelById(id: string): Channel | null {
   return getStore().dataset.channels.find((c) => c.id === id) ?? null;
 }
 
-export function getCategoriesWithCounts(): Array<Category & { count: number }> {
+/**
+ * Category counts. When a language is provided, counts are recomputed over the
+ * language-filtered subset so filter chips always match the visible catalog.
+ */
+export function getCategoriesWithCounts(language?: string): Array<Category & { count: number }> {
   const { dataset, catCounts } = getStore();
+  const counts = language ? countByLanguage(dataset.channels, language, "categories") : catCounts;
   return dataset.categories
-    .map((c) => ({ ...c, count: catCounts.get(c.id) ?? 0 }))
+    .map((c) => ({ ...c, count: counts.get(c.id) ?? 0 }))
     .filter((c) => c.count > 0)
     .sort((a, b) => b.count - a.count);
 }
 
-export function getCountriesWithCounts(): Array<Country & { count: number }> {
+function countByLanguage(
+  channels: Channel[],
+  language: string,
+  kind: "categories" | "country",
+): Map<string, number> {
+  const counts = new Map<string, number>();
+  for (const ch of channels) {
+    if (ch.language !== language) continue;
+    if (kind === "country") {
+      counts.set(ch.country, (counts.get(ch.country) ?? 0) + 1);
+    } else {
+      for (const c of ch.categories) counts.set(c, (counts.get(c) ?? 0) + 1);
+    }
+  }
+  return counts;
+}
+
+export function getCountriesWithCounts(language?: string): Array<Country & { count: number }> {
   const { dataset, countryCounts } = getStore();
+  const counts = language ? countByLanguage(dataset.channels, language, "country") : countryCounts;
   return dataset.countries
-    .map((c) => ({ ...c, count: countryCounts.get(c.code) ?? 0 }))
+    .map((c) => ({ ...c, count: counts.get(c.code) ?? 0 }))
+    .filter((c) => c.count > 0)
     .sort((a, b) => a.name.localeCompare(b.name));
 }
 

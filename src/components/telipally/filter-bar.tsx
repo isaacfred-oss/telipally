@@ -1,5 +1,7 @@
 "use client";
 
+import { Languages } from "lucide-react";
+
 import type { CategoriesResponse, CountriesResponse } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -16,6 +18,8 @@ interface FilterBarProps {
   countries: CountriesResponse["items"] | undefined;
   selectedCategory: string;
   selectedCountry: string;
+  englishOnly: boolean;
+  onEnglishOnlyChange: (value: boolean) => void;
   onCategoryChange: (category: string) => void;
   onCountryChange: (country: string) => void;
 }
@@ -25,6 +29,8 @@ export function FilterBar({
   countries,
   selectedCategory,
   selectedCountry,
+  englishOnly,
+  onEnglishOnlyChange,
   onCategoryChange,
   onCountryChange,
 }: FilterBarProps) {
@@ -49,8 +55,23 @@ export function FilterBar({
           Array.from({ length: 8 }).map((_, i) => <Skeleton key={i} className="h-9 w-28 rounded-full" />)}
       </div>
 
-      {/* Country select */}
-      <div className="flex items-center gap-2">
+      {/* Language + country filters */}
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => onEnglishOnlyChange(!englishOnly)}
+          aria-pressed={englishOnly}
+          aria-label="Show English channels only"
+          className={cn(
+            "flex h-10 shrink-0 items-center gap-1.5 rounded-md border px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            englishOnly
+              ? "border-primary bg-primary text-primary-foreground shadow-sm"
+              : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground",
+          )}
+        >
+          <Languages aria-hidden="true" className="size-4" />
+          English only
+        </button>
         <Select value={selectedCountry} onValueChange={onCountryChange}>
           <SelectTrigger
             aria-label="Filter by country"

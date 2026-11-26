@@ -38,15 +38,27 @@ export default function Home() {
   const recentsItems = useRecents((s) => s.items);
   const addRecent = useRecents((s) => s.add);
   const autoplay = useSettings((s) => s.autoplay);
+  const englishOnly = useSettings((s) => s.englishOnly);
+  const setEnglishOnly = useSettings((s) => s.setEnglishOnly);
+  const langParam = englishOnly ? "eng" : undefined;
 
   // ---------- server data ----------
-  const categoriesQ = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, staleTime: Infinity });
-  const countriesQ = useQuery({ queryKey: ["countries"], queryFn: fetchCountries, staleTime: Infinity });
+  const categoriesQ = useQuery({
+    queryKey: ["categories", englishOnly],
+    queryFn: () => fetchCategories(langParam),
+    staleTime: Infinity,
+  });
+  const countriesQ = useQuery({
+    queryKey: ["countries", englishOnly],
+    queryFn: () => fetchCountries(langParam),
+    staleTime: Infinity,
+  });
   const metaQ = useQuery({ queryKey: ["meta"], queryFn: fetchMeta, staleTime: 60_000 });
 
   const browseQ = useInfiniteQuery({
-    queryKey: ["channels", "browse", country, category],
-    queryFn: ({ pageParam }) => fetchChannels({ country, category, page: pageParam, pageSize: PAGE_SIZE }),
+    queryKey: ["channels", "browse", country, category, englishOnly],
+    queryFn: ({ pageParam }) =>
+      fetchChannels({ country, category, lang: langParam, page: pageParam, pageSize: PAGE_SIZE }),
     initialPageParam: 1,
     getNextPageParam: (last) => (last.hasMore ? last.page + 1 : undefined),
     placeholderData: keepPreviousData,
@@ -54,8 +66,9 @@ export default function Home() {
 
   const trimmedSearch = search.trim();
   const searchQ = useInfiniteQuery({
-    queryKey: ["channels", "search", trimmedSearch],
-    queryFn: ({ pageParam }) => fetchChannels({ q: trimmedSearch, page: pageParam, pageSize: PAGE_SIZE }),
+    queryKey: ["channels", "search", trimmedSearch, englishOnly],
+    queryFn: ({ pageParam }) =>
+      fetchChannels({ q: trimmedSearch, lang: langParam, page: pageParam, pageSize: PAGE_SIZE }),
     initialPageParam: 1,
     getNextPageParam: (last) => (last.hasMore ? last.page + 1 : undefined),
     enabled: trimmedSearch.length > 0,
@@ -157,6 +170,8 @@ export default function Home() {
               countries={countriesQ.data?.items}
               selectedCategory={category}
               selectedCountry={country}
+              englishOnly={englishOnly}
+              onEnglishOnlyChange={setEnglishOnly}
               onCategoryChange={setCategory}
               onCountryChange={setCountry}
             />
